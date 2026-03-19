@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { store, ensureStoreLoaded } from "@/lib/store";
+import { checkApiKey } from "@/lib/auth";
 
 export async function GET(request, { params }) {
+  const authError = checkApiKey(request);
+  if (authError) return authError;
+
   await ensureStoreLoaded();
 
   if (!store.data) {

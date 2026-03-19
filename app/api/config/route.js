@@ -1,8 +1,12 @@
 import { NextResponse } from "next/server";
 import { store, ensureStoreLoaded } from "@/lib/store";
 import { supabase } from "@/lib/supabase";
+import { checkApiKey } from "@/lib/auth";
 
 export async function POST(request) {
+  const authError = checkApiKey(request);
+  if (authError) return authError;
+
   await ensureStoreLoaded();
 
   if (!store.data) {

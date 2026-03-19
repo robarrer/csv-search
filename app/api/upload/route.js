@@ -2,10 +2,14 @@ import { NextResponse } from "next/server";
 import Papa from "papaparse";
 import { store } from "@/lib/store";
 import { supabase } from "@/lib/supabase";
+import { checkApiKey } from "@/lib/auth";
 
 const BATCH_SIZE = 500;
 
 export async function POST(request) {
+  const authError = checkApiKey(request);
+  if (authError) return authError;
+
   try {
     const formData = await request.formData();
     const file = formData.get("file");
