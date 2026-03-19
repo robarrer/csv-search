@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server";
 
 export function middleware(request) {
+  const { pathname } = request.nextUrl;
+
+  // Solo proteger rutas /api/
+  if (!pathname.startsWith("/api/")) {
+    return NextResponse.next();
+  }
+
   const apiKey = request.headers.get("x-api-key");
   const validKey = process.env.API_KEY;
 
@@ -21,7 +28,6 @@ export function middleware(request) {
   return NextResponse.next();
 }
 
-// Aplicar solo a rutas /api/*
 export const config = {
-  matcher: "/api/:path*",
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
